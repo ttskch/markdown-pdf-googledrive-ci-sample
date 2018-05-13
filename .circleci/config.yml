@@ -1,0 +1,49 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node
+    working_directory: ~/wd
+    steps:
+      # if markdown includes characters other than ascii (e.g. Japanese) you needs to install fonts like below
+      # - run: sudo apt-get update && sudo apt-get install fonts-ipaexfont -y
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-{{ checksum "package.json" }}
+      - run: npm i
+      - save_cache:
+          key: npm-{{ checksum "package.json" }}
+          paths:
+            - ~/wd/node_modules
+      - run: npm run build
+      - save_cache:
+          key: build-{{ .Revision }}
+          paths:
+            - ~/wd/build
+
+  # compile gdrive from source because the --service-account feature is not released as binary yet
+  # @see https://github.com/prasmussen/gdrive/issues/242
+  deploy:
+    docker:
+      - image: circleci/golang
+    working_directory: ~/wd
+    steps:
+      - run: go get github.com/prasmussen/gdrive
+      - restore_cache:
+          keys:
+            - build-{{ .Revision }}
+      - deploy:
+          command: |
+            echo $GOOGLE_SERVICE_ACCOUNT_CREDENTIAL > credential.json
+            dirname=`date +%Y%m%d_%H%M%S` && mv build $dirname
+            gdrive --config `pwd` --service-account credential.json upload -p parent_folder_id_here -r $dirname
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
