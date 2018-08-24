@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "markdown-pdf": "^8.1.1"
+    "markdown-pdf": "^9.0.0"
   },
   "scripts": {
     "build": "rm -rf build/* && for file in `find src -type f` ; do npx markdown-pdf -s css/style.css -o build/`echo $file | sed -r 's/src\\/(.*)\\.md/\\1/'`.pdf $file ; done"
