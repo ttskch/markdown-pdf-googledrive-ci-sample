@@ -5,8 +5,8 @@ A sample of converting Markdown to PDF and deploying to Google Drive with Circle
 ## Mechanism
 
 * Converts Markdown to PDF with [markdown-pdf](https://github.com/alanshaw/markdown-pdf)
-* Deploys PDF to Google Drive with [gdrive](https://github.com/prasmussen/gdrive)
-    * Uses [Service Account](https://github.com/prasmussen/gdrive#service-account) feature to make CircleCI enable to deploy to Google Drive
+* Deploys PDF to Google Drive with [gdrive](https://github.com/gdrive-org/gdrive)
+    * Uses [Service Account](https://github.com/gdrive-org/gdrive#service-account) feature to make CircleCI enable to deploy to Google Drive
 
 ## Preparing
 
@@ -28,15 +28,7 @@ A sample of converting Markdown to PDF and deploying to Google Drive with Circle
 ![image](https://user-images.githubusercontent.com/4360663/39964702-41c01c72-56c5-11e8-9bbd-d702e8359678.png)
 1. Share the target folder to the Service Account with "edit" access, and copy the folder id
 ![image](https://user-images.githubusercontent.com/4360663/39964742-a897a7a2-56c6-11e8-9383-78a1097f6dde.png)
-1. Replace `parent_folder_id_here` of [.circleci/config.yml](.circleci/config.yml#L40) with the copied folder id
-
-## Notes
-
-gdrive's Service Account feature is [not released as binary yet](https://github.com/prasmussen/gdrive/issues/242) so currently we needs to [compile it from source](.circleci/config.yml#L25-32).
-
-But after gdrive v2.2.0 was released we should be able to simply download official binary. Then you can use [.circleci/config.gdrive220.yml](.circleci/config.gdrive220.yml).
-
-> Of course you have to replace **download url** and **shasum** in the file and rename the file to `config.yml`.
+1. Replace `{parent_folder_id_here}` of [.circleci/config.yml](.circleci/config.yml#L35) with the copied folder id
 
 ## Result example
 
